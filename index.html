@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Easy Broadcast — Turn Your Audio Into Monetized YouTube Video</title>
-<meta name="description" content="Easy Broadcast turns your audio into a branded, YouTube-ready video automatically — no editing, no software. Built for pastors, podcasters, coaches and creators.">
+<title>Easy Broadcast - Turn Your Audio Into Monetized YouTube Video</title>
+<meta name="description" content="Easy Broadcast turns your audio into a branded, YouTube-ready video automatically - no editing, no software. Built for pastors, podcasters, coaches and creators.">
 
 <!-- Open Graph -->
-<meta property="og:title" content="Easy Broadcast — Stop Leaving Money On YouTube">
-<meta property="og:description" content="Send your audio. We turn it into a branded, YouTube-ready video — automatically, in minutes.">
+<meta property="og:title" content="Easy Broadcast - Turn Your Audio Into Monetized YouTube Video">
+<meta property="og:description" content="Send your audio to whatsapp. We turn it into a branded, YouTube-ready video - automatically, in minutes.">
 <meta property="og:type" content="website">
 
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -16,7 +16,8 @@
 <!-- Fonts: preconnect + preload for speed -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 
 <link rel="stylesheet" href="style.css">
 </head>
@@ -38,7 +39,12 @@
       </svg>
       Easy Broadcast
     </a>
-    <nav class="nav__links">
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="site-navigation" aria-label="Open navigation menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav__links" id="site-navigation">
       <a href="#how">How it works</a>
       <a href="#who">Who it's for</a>
       <a href="#pricing">Pricing</a>
@@ -56,13 +62,16 @@
     <div class="wrap hero__inner">
       <div class="hero__copy reveal">
         <p class="eyebrow">On air in minutes</p>
-        <h1 class="hero__headline">Stop leaving<br>money on <span class="ink-amber">YouTube.</span></h1>
-        <p class="hero__sub">You're already recording the message. Send it to us as audio — we hand it back as a fully branded, YouTube-ready video. No editing. No software. No waiting.</p>
+        <h1 class="hero__headline">Phone Audio<br>in to <span class="ink-amber">YouTube.</span></h1>
+        <p class="hero__sub">Send phone recordings to our Whatsapp/Telegram (as audio) - our system creates a fully branded, YouTube video for your Channel. Automatically uploaded. No editing. No waiting.</p>
         <div class="hero__ctas">
           <a href="#start" class="btn btn--amber btn--lg">Get Started</a>
           <a href="#how" class="btn btn--ghost btn--lg">See how it works</a>
         </div>
-        <p class="hero__note">Built for pastors, podcasters, coaches, and creators with something worth hearing.</p>
+        <p class="hero__note">Built for Pastors, Podcasters, Coaches, and creators with something worth hearing.</p>
+        <a class="hero__promo-link" href="#pricing" aria-label="View pricing">
+          <img class="hero__promo-image" src="hero-promo.jpg.jpeg" alt="Turn audio sermons into trending YouTube videos">
+        </a>
       </div>
 
       <div class="hero__visual reveal" aria-hidden="true">
@@ -88,41 +97,19 @@
               <rect x="1" y="4" width="22" height="16" rx="4" fill="currentColor"/>
               <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="var(--paper)"/>
             </svg>
+            <div class="waveform" id="waveform-youtube"></div>
             <p class="icon-tile__label">Live on YouTube</p>
           </div>
         </div>
       </div>
     </div>
   </section>
-  <section class="problem">
-    <div class="wrap">
-      <div class="section-head reveal">
-        <p class="eyebrow eyebrow--dark">The problem</p>
-        <h2>You're already doing the hard part.</h2>
-      </div>
-      <div class="problem__grid">
-        <div class="problem__item reveal">
-          <p class="problem__num">01</p>
-          <p>You record the message every week — the sermon, the episode, the lesson. That part's done.</p>
-        </div>
-        <div class="problem__item reveal">
-          <p class="problem__num">02</p>
-          <p>But it sits as an audio file. It's not on YouTube, so it's not earning ad revenue and not reaching anyone new.</p>
-        </div>
-        <div class="problem__item reveal">
-          <p class="problem__num">03</p>
-          <p>Editing video feels like a job for a production team — too slow to DIY, too expensive to outsource every single week.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ============ HOW IT WORKS ============ -->
   <section id="how" class="how">
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow">How it works</p>
-        <h2>Three steps. One message.</h2>
+        <h2>Three steps.</h2>
       </div>
 
       <ol class="steps">
@@ -135,7 +122,7 @@
           </svg>
           <span class="step__num">01</span>
           <h3>Send your audio</h3>
-          <p>Text or upload a voice note, sermon, or episode — through a simple chat message. That's the whole job on your end.</p>
+          <p>Send a voice note or sermon via a simple Whatsapp/Telegram chat message. Thats it from your end.</p>
         </li>
         <li class="step reveal">
           <svg class="step__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -146,8 +133,8 @@
             <line x1="14" y1="15" x2="16" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
           <span class="step__num">02</span>
-          <h3>We build your video</h3>
-          <p>Your audio is automatically formatted into a polished, fully branded video — matched to your channel, in minutes.</p>
+          <h3>We build video</h3>
+          <p>Your audio is automatically formatted into a fully branded video using your slides in minutes.</p>
         </li>
         <li class="step reveal">
           <svg class="step__icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -155,8 +142,8 @@
             <path d="M10 8.5L16 12L10 15.5V8.5Z" fill="var(--paper-dim)"/>
           </svg>
           <span class="step__num">03</span>
-          <h3>It goes live</h3>
-          <p>Published straight to your YouTube channel — ready to earn ad revenue and reach people who never found you before.</p>
+          <h3>Live on YouTube</h3>
+          <p>Published straight to your YouTube channel - ready to earn ad revenue and reach more people.</p>
         </li>
       </ol>
     </div>
@@ -168,25 +155,24 @@
       <div class="section-head reveal">
         <p class="eyebrow eyebrow--dark">Who it's for</p>
         <h2>If you make audio, this is for you.</h2>
-        <p class="section-lede">Anyone already creating content with no video presence is leaving reach and revenue on the table.</p>
+        <p class="section-lede">Anyone already creating content with no video presence. You could be earning more revenue via YouTube.</p>
       </div>
 
       <div class="who__grid">
         <div class="who__card reveal">
           <h3>Churches &amp; Pastors</h3>
-          <p>Sermons are recorded every week but rarely make it online. Get on YouTube without adding a single task to Sunday.</p>
-        </div>
+          <p>Morning devotions, prayers and preachings are recorded every day but rarely make it online. Get on YouTube without "Media team".</div>
         <div class="who__card reveal">
           <h3>Podcasters</h3>
-          <p>Stop losing YouTube's massive podcast audience — and its monetization — because converting to video felt like a production.</p>
+          <p>Stop losing YouTube's massive podcast audience and its monetization. Converting to video must not like a production.</p>
         </div>
         <div class="who__card reveal">
           <h3>Coaches &amp; Speakers</h3>
-          <p>Building a personal brand on voice notes? Post consistently without video editing ever being the bottleneck again.</p>
+          <p>Building a personal brand on voice notes! Post consistently without video editing. No more bottlenecks again.</p>
         </div>
         <div class="who__card reveal">
           <h3>Faith &amp; Meditation Creators</h3>
-          <p>Meditation, sleep, and devotional audio thrive on YouTube — this format fits the genre exactly.</p>
+          <p>Short Sermons, Meditation, sleep and devotional audio thrive on YouTube. This format fits the genre exactly.</p>
         </div>
         <div class="who__card reveal">
           <h3>Audiobook Creators</h3>
@@ -194,7 +180,7 @@
         </div>
         <div class="who__card reveal">
           <h3>Radio &amp; Talk Show Hosts</h3>
-          <p>Local radio content that never makes it past the airwaves — finally has a home online.</p>
+          <p>Local radio content that never makes it past the airwaves - finally has a home online.</p>
         </div>
       </div>
     </div>
@@ -222,7 +208,7 @@
         <div class="benefit reveal">
           <div class="benefit__icon">◆</div>
           <h3>Fully branded to you</h3>
-          <p>Every video matches your channel — your look, your name, your audience recognizes it instantly.</p>
+          <p>Every video matches your channel - your look, your name, your audience recognizes it instantly.</p>
         </div>
         <div class="benefit reveal">
           <div class="benefit__icon">▲</div>
@@ -239,19 +225,20 @@
       <div class="section-head reveal">
         <p class="eyebrow eyebrow--dark">Pricing</p>
         <h2>Simple plans. No surprises.</h2>
-        <p class="section-lede">Placeholder pricing — swap in your real numbers before launch.</p>
+        <p class="section-lede">All options are pay as you go. You can stop at any time.</p>
       </div>
 
       <div class="pricing__grid">
         <div class="plan reveal">
           <h3>Starter</h3>
-          <p class="plan__price">$49<span>/mo</span></p>
+          <p class="plan__price">R390<span>/mo</span></p>
           <p class="plan__for">For occasional creators</p>
           <ul>
             <li>4 videos per month</li>
             <li>Standard branded template</li>
             <li>Auto-publish to YouTube</li>
-            <li>Email support</li>
+            <li>WhatsApp support</li>
+            <li>10 minutes or less</li>
           </ul>
           <a href="#start" class="btn btn--outline">Choose Starter</a>
         </div>
@@ -259,28 +246,29 @@
         <div class="plan plan--featured reveal">
           <p class="plan__badge">Most popular</p>
           <h3>Growth</h3>
-          <p class="plan__price">$99<span>/mo</span></p>
-          <p class="plan__for">For weekly creators</p>
+          <p class="plan__price">R590<span>/mo</span></p>
+          <p class="plan__for">For daily creators</p>
           <ul>
-            <li>Weekly videos, unlimited length</li>
+            <li>Daily videos, 10 minutes or less</li>
             <li>Custom branded template</li>
             <li>Auto-publish to YouTube</li>
-            <li>Thumbnail generation</li>
-            <li>Priority support</li>
+            <li>Monday to Friday</li>
+            <li>WhatsApp support</li>
           </ul>
           <a href="#start" class="btn btn--amber">Choose Growth</a>
         </div>
 
         <div class="plan reveal">
           <h3>Pro</h3>
-          <p class="plan__price">$199<span>/mo</span></p>
+          <p class="plan__price">R990<span>/mo</span></p>
           <p class="plan__for">For teams &amp; networks</p>
           <ul>
-            <li>Unlimited videos</li>
-            <li>Multiple channels</li>
+            <li>Daily videos</li>
+            <li>YouTube channel</li>
+            <li>FaceBook channel</li>
             <li>Custom branded template</li>
-            <li>Analytics dashboard</li>
-            <li>Dedicated support</li>
+            <li>10 Minutes or less</li>
+            <li>WhasApp support</li>
           </ul>
           <a href="#start" class="btn btn--outline">Choose Pro</a>
         </div>
@@ -293,21 +281,21 @@
     <div class="wrap">
       <div class="section-head reveal">
         <p class="eyebrow">What creators say</p>
-        <h2>Placeholder testimonials — replace with your own.</h2>
+        <h2>Placeholder testimonials - replace with your own.</h2>
       </div>
 
       <div class="testimonials__grid">
         <blockquote class="testimonial reveal">
-          <p>“We record the sermon every Sunday anyway. Now it's on YouTube by Monday morning without anyone on staff touching a video editor.”</p>
-          <cite>— Pastor J., Placeholder Church</cite>
+          <p>“We record the morning devotions every morning. Now it's on YouTube after 3 minutes of sending without anyone on Media Team touching a video editor.”</p>
+          <cite>- Pastor Thapelo Sefanyetso, His Kingdom Ministries Int</cite>
         </blockquote>
         <blockquote class="testimonial reveal">
-          <p>“I'd been sitting on 40 podcast episodes with no video version. Easy Broadcast cleared the backlog in a week.”</p>
-          <cite>— M. Rivera, Placeholder Podcast</cite>
+          <p>“I'd been sitting on 80 short sermons that I send to our WhatsApp group. Peoples phones are getting full. No video version of those things. Easy Broadcast cleared the backlog in a week. Now our videos are scheduled to post on daily basis.”</p>
+          <cite>- Apostle D. Ditaba Ministries</cite>
         </blockquote>
         <blockquote class="testimonial reveal">
-          <p>“The branding match was the surprise for me — it actually looks like my channel, not a generic template.”</p>
-          <cite>— D. Okafor, Placeholder Coaching Co.</cite>
+          <p>“The video slides was so surprise for me - it actually looks like I was preaching. These guys used the slides of me preaching and it looks real for my listeners.”</p>
+          <cite>- D. Okafor, Higher Grace Ministries International</cite>
         </blockquote>
       </div>
     </div>
@@ -324,11 +312,11 @@
       <div class="accordion reveal">
         <div class="accordion__item">
           <button class="accordion__trigger" aria-expanded="false">
-            <span>What audio formats can I send?</span>
+            <span>What audio formats should I send? I use iPhone tablet</span>
             <span class="accordion__icon">+</span>
           </button>
           <div class="accordion__panel">
-            <p>MP3, WAV, M4A, and voice notes sent directly through chat all work. If you're not sure, just send it — we'll let you know if we need a different format.</p>
+            <p>MP3, WAV, M4A, OGGand voice notes sent directly through chat will all work. If you're not sure, just send it - we'll let you know if we need a different format.</p>
           </div>
         </div>
         <div class="accordion__item">
@@ -337,7 +325,7 @@
             <span class="accordion__icon">+</span>
           </button>
           <div class="accordion__panel">
-            <p>Most videos are ready and published within minutes of you sending the audio, depending on length. Longer recordings, like full sermons, may take a little longer.</p>
+            <p>We charge a flat R600 to create a video template. Videos are ready and published within 3 minutes of you sending the audio.</p>
           </div>
         </div>
         <div class="accordion__item">
@@ -346,7 +334,7 @@
             <span class="accordion__icon">+</span>
           </button>
           <div class="accordion__panel">
-            <p>Yes — videos are published directly to your existing channel, so your monetization, subscribers, and history stay exactly where they are.</p>
+            <p>Yes - videos are published directly to your existing channel, not ours. So your monetization, subscribers, and history stay exactly where they are.</p>
           </div>
         </div>
         <div class="accordion__item">
@@ -376,12 +364,12 @@
     <div class="wrap about__inner">
       <div class="section-head reveal">
         <p class="eyebrow">About us</p>
-        <h2>Broadcasting shouldn't be hard.<br>So we made it easy.</h2>
+        <h2>Broadcasting should not be hard.<br>So we made it easy.</h2>
       </div>
       <div class="about__copy reveal">
-        <p>Easy Broadcast started with a simple observation: some of the most powerful voices out there — pastors delivering Sunday messages, coaches sharing hard-won wisdom, podcasters building real community — were sitting on YouTube's sidelines. Not because their content wasn't good enough, but because turning audio into video felt like a job for professionals, big budgets, and hours nobody had to spare.</p>
+        <p>Easy Broadcast started with a simple observation: some of the most powerful voices out there - pastors delivering Sunday messages, coaches sharing hard-won wisdom, podcasters building real community - were sitting on YouTube's sidelines. Not because their content wasn't good enough, but because turning audio into video felt like a job for professionals, big budgets, and hours nobody had to spare.</p>
         <p>We didn't think that was fair. A sermon that changes someone's week shouldn't lose its audience just because it was never uploaded. A podcast episode that took hours to record shouldn't earn nothing just because editing video got pushed to the bottom of the to-do list, week after week.</p>
-        <p>So we built Easy Broadcast to remove that barrier completely. Send us your audio. We turn it into a polished, branded, YouTube-ready video — automatically, in minutes, with no editing software and no learning curve. What used to take a production team now takes a single message.</p>
+        <p>So we built Easy Broadcast to remove that barrier completely. Send us your audio. We turn it into a polished, branded, YouTube-ready video - automatically, in minutes, with no editing software and no learning curve. What used to take a production team now takes a single message.</p>
         <p>Our mission is simple: help the people already doing the hard work of creating get the reach and revenue their message deserves. You focus on what you do best. We handle turning it into something the world can find, watch, and support.</p>
         <p class="about__sign">Easy to send. Easy to broadcast. Easy to grow.</p>
       </div>
@@ -398,18 +386,30 @@
       </div>
 
       <form class="form reveal" id="signup-form" action="#" method="post">
+        <input type="hidden" name="_subject" id="form-subject" value="Easy Broadcast Form">
+        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_template" value="table">
         <div class="form__row">
           <label for="name">Name</label>
-          <input type="text" id="name" name="name" placeholder="Your name" required>
+          <input type="text" id="name" name="name" placeholder="Your name" autocomplete="name" required>
         </div>
         <div class="form__row">
           <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+        </div>
+        <div class="form__row">
+          <label for="phone">Phone number</label>
+          <input type="tel" id="phone" name="phone" placeholder="Your phone number" autocomplete="tel" required>
+        </div>
+        <div class="form__row">
+          <label for="country">Country</label>
+          <input type="text" id="country" name="country" placeholder="Your country" autocomplete="country-name" required>
         </div>
         <div class="form__row">
           <label for="message">What do you create?</label>
           <textarea id="message" name="message" rows="4" placeholder="Sermons, a podcast, coaching content..."></textarea>
         </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEs4vwBpKXcVPJgG" data-action="signup"></div>
         <button type="submit" class="btn btn--amber btn--lg">Send it in</button>
         <p class="form__note" id="form-note" role="status" aria-live="polite"></p>
       </form>
