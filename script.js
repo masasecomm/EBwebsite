@@ -5,6 +5,17 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---- Mobile navigation ---- */
   var navToggle = document.querySelector('.nav__toggle');
   var navLinks = document.querySelector('.nav__links');
+
+  document.querySelectorAll('a[href="#top"]').forEach(function (topLink) {
+    topLink.addEventListener('click', function (event) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#top');
+      }
+    });
+  });
+
   if (navToggle && navLinks) {
     function closeNavigation() {
       navToggle.setAttribute('aria-expanded', 'false');
@@ -185,6 +196,18 @@ document.addEventListener('DOMContentLoaded', function () {
     closeBtn.setAttribute('aria-label', 'Close chat');
     closeBtn.textContent = '×';
 
+    var minimizeBtn = document.createElement('button');
+    minimizeBtn.type = 'button';
+    minimizeBtn.className = 'lead-chat-minimize';
+    minimizeBtn.setAttribute('aria-label', 'Minimize chat');
+    minimizeBtn.textContent = '−';
+
+    var restoreBtn = document.createElement('button');
+    restoreBtn.type = 'button';
+    restoreBtn.className = 'lead-chat-restore';
+    restoreBtn.setAttribute('aria-label', 'Restore chat');
+    restoreBtn.innerHTML = '<span class="lead-chat-restore-avatar" aria-hidden="true"></span><span>Chat</span>';
+
     var header = document.createElement('div');
     header.className = 'lead-chat-header';
     header.innerHTML = '<span class="lead-chat-admin-avatar" aria-hidden="true"></span><strong>Easy Broadcast</strong><span class="lead-chat-header-label">CHAT</span>';
@@ -220,6 +243,7 @@ document.addEventListener('DOMContentLoaded', function () {
     startBtn.type = 'button';
     startBtn.className = 'btn btn--amber btn--sm lead-chat-start';
     startBtn.textContent = 'Click to start talking';
+    startBtn.disabled = true;
 
     var turnstileWrap = document.createElement('div');
     turnstileWrap.className = 'lead-chat-turnstile';
@@ -227,8 +251,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var submitBtn = document.createElement('button');
     submitBtn.type = 'submit';
     submitBtn.className = 'btn btn--amber btn--sm';
-    submitBtn.textContent = 'Next';
+    submitBtn.textContent = 'Submit';
     submitBtn.style.display = 'none';
+    form.dataset.stepType = 'button';
+
+    function setConversationBusy(isBusy) {
+      inputWrap.style.display = isBusy ? 'none' : 'block';
+      submitBtn.style.display = isBusy ? 'none' : 'inline-flex';
+      startBtn.style.display = isBusy ? 'none' : startBtn.style.display;
+    }
 
     function showTypingIndicator() {
       if (body.querySelector('.lead-chat-typing')) {
@@ -281,7 +312,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
       window.turnstile.render(turnstileWrap, {
         sitekey: '0x4AAAAAAEs4vwBpKXcVPJgG',
-        action: 'lead_chat'
+        action: 'lead_chat',
+        callback: function (token) {
+          turnstileWrap.dataset.verified = token ? 'true' : 'false';
+          turnstileWrap.style.display = token ? 'none' : 'flex';
+          startBtn.disabled = !token;
+        },
+        'expired-callback': function () {
+          turnstileWrap.dataset.verified = 'false';
+          turnstileWrap.style.display = 'flex';
+          startBtn.disabled = true;
+        },
+        'error-callback': function () {
+          turnstileWrap.dataset.verified = 'false';
+          turnstileWrap.style.display = 'flex';
+          startBtn.disabled = true;
+        }
       });
       turnstileWrap.dataset.rendered = 'true';
     }
@@ -327,7 +373,8 @@ document.addEventListener('DOMContentLoaded', function () {
       activeField.placeholder = step.placeholder;
       activeField.focus();
       form.dataset.currentKey = step.key;
-      submitBtn.textContent = state.index === steps.length - 1 ? 'Send details' : 'Next';
+      submitBtn.textContent = 'Submit';
+      setConversationBusy(false);
     }
 
     function askStep() {
@@ -376,6 +423,8 @@ document.addEventListener('DOMContentLoaded', function () {
           addBubble('Please complete the security check before starting the chat.', 'bot');
           return;
         }
+        startBtn.disabled = true;
+        turnstileWrap.style.display = 'none';
         advanceFromIntro();
         return;
       }
@@ -412,6 +461,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
       addUserBubble(rawValue);
       state.data[step.key] = rawValue;
+      input.value = '';
+      textarea.value = '';
+      setConversationBusy(true);
 
       if (state.index === steps.length - 1) {
         submitBtn.disabled = true;
@@ -440,14 +492,24 @@ document.addEventListener('DOMContentLoaded', function () {
       form.requestSubmit();
     });
 
+    minimizeBtn.addEventListener('click', function () {
+      popup.classList.add('is-minimized');
+      document.body.classList.remove('lead-chat-open');
+    });
+
+    restoreBtn.addEventListener('click', function () {
+      popup.classList.remove('is-minimized');
+      document.body.classList.add('lead-chat-open');
+    });
+
     closeBtn.addEventListener('click', function () {
-      popup.classList.remove('is-visible');
+      popup.classList.add('is-minimized');
       document.body.classList.remove('lead-chat-open');
     });
 
     popup.addEventListener('click', function (event) {
       if (event.target === popup) {
-        popup.classList.remove('is-visible');
+        popup.classList.add('is-minimized');
         document.body.classList.remove('lead-chat-open');
       }
     });
@@ -460,10 +522,12 @@ document.addEventListener('DOMContentLoaded', function () {
     form.appendChild(submitBtn);
 
     panel.appendChild(closeBtn);
+    panel.appendChild(minimizeBtn);
     panel.appendChild(header);
     panel.appendChild(body);
     panel.appendChild(form);
     popup.appendChild(panel);
+    popup.appendChild(restoreBtn);
     document.body.appendChild(popup);
 
     document.body.classList.add('lead-chat-open');
@@ -486,9 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 
-  window.addEventListener('load', function () {
-    setInterval(checkPopupEligibility, 1000);
-  });
+  setInterval(checkPopupEligibility, 1000);
 
   /* ---- Footer year ---- */
   var year = document.getElementById('year');
