@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ---- Signup form delivery ---- */
   var form = document.getElementById('signup-form');
-  var gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbygroFkCgNoWCx_sm7c3DzoTG5JcbkVSeCoJICrOzGoUu7ZPpB3N42mHWPuqIgCJx2Z/exec';
+  var gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxHdWrtgLMzHZiYSMmIdqek-HqLnlpCL8mIPofVugwRBTlyrG4UHERU4kIcpzcGlwlD/exec';
   var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   var phoneField = document.getElementById('phone');
 
@@ -131,8 +131,41 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
       phoneField.setCustomValidity('');
+      e.preventDefault();
+
       var name = document.getElementById('name').value.trim();
-      document.getElementById('form-subject').value = 'Easy Broadcast Form ' + name;
+      document.getElementById('form-subject').value = 'Main Form';
+      var note = document.getElementById('form-note');
+      var submitButton = form.querySelector('button[type="submit"]');
+      var formData = new FormData(form);
+      var params = new URLSearchParams(formData);
+
+      submitButton.disabled = true;
+      note.textContent = 'Sending your information...';
+
+      fetch(gasWebAppUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+        },
+        body: params.toString()
+      })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error('Submission failed');
+          }
+          return response.text();
+        })
+        .then(function () {
+          note.textContent = 'Thanks, ' + name + '. Your information has been sent.';
+          form.reset();
+        })
+        .catch(function () {
+          note.textContent = 'There was a problem sending your information. Please try again.';
+        })
+        .finally(function () {
+          submitButton.disabled = false;
+        });
     });
   }
 

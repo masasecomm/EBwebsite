@@ -725,8 +725,8 @@ a { color: inherit; text-decoration: none; }
   position: absolute;
   left: 14px;
   top: 50%;
-  width: 30px;
-  height: 30px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
   object-position: center top;
@@ -782,8 +782,8 @@ a { color: inherit; text-decoration: none; }
 .lead-chat-restore-avatar {
   position: relative;
   display: inline-block;
-  width: 18px;
-  height: 18px;
+  width: 38px;
+  height: 38px;
   margin-right: 7px;
   border-radius: 50%;
   object-fit: cover;
