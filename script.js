@@ -137,12 +137,12 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   /* ---- Conversational popup lead form ---- */
-  function submitToGoogleApp(data) {
+  function submitToGoogleApp(data, source) {
     var params = new URLSearchParams();
     Object.keys(data).forEach(function (key) {
       params.append(key, data[key]);
     });
-    params.append('_subject', 'Easy Broadcast Form');
+    params.append('_subject', source === 'popup' ? 'Easy Broadcast Popup Form' : 'Easy Broadcast Form');
 
     return fetch(gasWebAppUrl, {
       method: 'POST',
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
       { key: 'message', label: 'Finally, what question would you like to ask us? Please tell us in full so our team can give you the right answer.', type: 'textarea', placeholder: 'Tell us about your goals, timeline, or what you want to create...', required: true }
     ];
 
-    var state = { index: 0, data: {} };
+    var state = { index: 0, data: {}, followUp: false };
     var popup = document.createElement('div');
     popup.id = 'lead-chat-popup';
     popup.className = 'lead-chat-popup';
@@ -206,11 +206,11 @@ document.addEventListener('DOMContentLoaded', function () {
     restoreBtn.type = 'button';
     restoreBtn.className = 'lead-chat-restore';
     restoreBtn.setAttribute('aria-label', 'Restore chat');
-    restoreBtn.innerHTML = '<span class="lead-chat-restore-avatar" aria-hidden="true"></span><span>Chat</span>';
+    restoreBtn.innerHTML = '<img class="lead-chat-restore-avatar" src="easybroadcast-admin-avatar.png" alt="" aria-hidden="true"><span>Chat</span>';
 
     var header = document.createElement('div');
     header.className = 'lead-chat-header';
-    header.innerHTML = '<span class="lead-chat-admin-avatar" aria-hidden="true"></span><strong>Easy Broadcast</strong><span class="lead-chat-header-label">CHAT</span>';
+    header.innerHTML = '<img class="lead-chat-admin-avatar" src="easybroadcast-admin-avatar.png" alt="" aria-hidden="true"><strong>Easy Broadcast</strong><span class="lead-chat-header-label">CHAT</span>';
 
     var body = document.createElement('div');
     body.className = 'lead-chat-body';
@@ -259,6 +259,11 @@ document.addEventListener('DOMContentLoaded', function () {
       inputWrap.style.display = isBusy ? 'none' : 'block';
       submitBtn.style.display = isBusy ? 'none' : 'inline-flex';
       startBtn.style.display = isBusy ? 'none' : startBtn.style.display;
+    }
+
+    function minimizeChat() {
+      popup.classList.add('is-minimized');
+      document.body.classList.remove('lead-chat-open');
     }
 
     function showTypingIndicator() {
@@ -399,14 +404,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function finishChat() {
       addBubble('Perfect, ' + state.data.name + '. Thanks for your question. Our team will be in contact soon.', 'bot');
-      submitBtn.disabled = true;
-      startBtn.disabled = true;
-      input.disabled = true;
-      textarea.disabled = true;
-      setTimeout(function () {
-        popup.classList.remove('is-visible');
-        document.body.classList.remove('lead-chat-open');
-      }, 2200);
+      state.followUp = true;
+      state.index = steps.length;
+      turnstileWrap.style.display = 'none';
+      startBtn.style.display = 'none';
+      input.style.display = 'none';
+      textarea.style.display = 'block';
+      textarea.value = '';
+      textarea.placeholder = 'Write another message or question...';
+      form.dataset.stepType = 'textarea';
+      submitBtn.textContent = 'Submit';
+      submitBtn.disabled = false;
+      setConversationBusy(false);
+      minimizeChat();
     }
 
     function advanceFromIntro() {
@@ -426,6 +436,33 @@ document.addEventListener('DOMContentLoaded', function () {
         startBtn.disabled = true;
         turnstileWrap.style.display = 'none';
         advanceFromIntro();
+        return;
+      }
+
+      if (state.followUp) {
+        var followUpValue = textarea.value.trim();
+        if (!followUpValue) {
+          textarea.focus();
+          return;
+        }
+
+        addUserBubble(followUpValue);
+        state.data.message = followUpValue;
+        textarea.value = '';
+        submitBtn.disabled = true;
+        setConversationBusy(true);
+        waitForAdminResponse(function () {
+          addBubble('Thanks, ' + state.data.name + '. I am sending your message now. Our team will contact you soon.', 'bot');
+          submitToGoogleApp(state.data, 'popup')
+            .then(function () {
+              finishChat();
+            })
+            .catch(function () {
+              addBubble('There was a small issue sending that. Please try again.', 'bot');
+              submitBtn.disabled = false;
+              setConversationBusy(false);
+            });
+        });
         return;
       }
 
@@ -469,7 +506,7 @@ document.addEventListener('DOMContentLoaded', function () {
         submitBtn.disabled = true;
         waitForAdminResponse(function () {
           addBubble('Thanks, ' + state.data.name + '. I am sending your question now. Our team will contact you soon.', 'bot');
-          submitToGoogleApp(state.data)
+          submitToGoogleApp(state.data, 'popup')
             .then(function () {
               finishChat();
             })
@@ -493,8 +530,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     minimizeBtn.addEventListener('click', function () {
-      popup.classList.add('is-minimized');
-      document.body.classList.remove('lead-chat-open');
+      minimizeChat();
     });
 
     restoreBtn.addEventListener('click', function () {
@@ -503,14 +539,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     closeBtn.addEventListener('click', function () {
-      popup.classList.add('is-minimized');
-      document.body.classList.remove('lead-chat-open');
+      minimizeChat();
     });
 
     popup.addEventListener('click', function (event) {
       if (event.target === popup) {
-        popup.classList.add('is-minimized');
-        document.body.classList.remove('lead-chat-open');
+        minimizeChat();
       }
     });
 
