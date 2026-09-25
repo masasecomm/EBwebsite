@@ -94,28 +94,28 @@ document.addEventListener('DOMContentLoaded', function () {
   /* ---- Signup form delivery ---- */
   var form = document.getElementById('signup-form');
   var gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxHdWrtgLMzHZiYSMmIdqek-HqLnlpCL8mIPofVugwRBTlyrG4UHERU4kIcpzcGlwlD/exec';
-  var destinationSheet = 'EasyBroadcast';
-  var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-  var phoneField = document.getElementById('phone');
+var destinationSheet = 'EasyBroadcast';
+var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+var phoneField = document.getElementById('phone');
 
-  function addLocalityFieldIfNeeded() {
-    var localityField = document.getElementById('locality');
-    if (localityField) {
-      return;
-    }
-
-    var formRow = document.querySelector('#signup-form .form__row:last-of-type');
-    if (!formRow) {
-      return;
-    }
-
-    var localityRow = document.createElement('div');
-    localityRow.className = 'form__row';
-    localityRow.innerHTML = '<label for="locality">Locality</label><input type="text" id="locality" name="locality" placeholder="City or suburb" autocomplete="address-level2">';
-    formRow.parentNode.insertBefore(localityRow, formRow.nextSibling);
+function addLocalityFieldIfNeeded() {
+  var localityField = document.getElementById('locality');
+  if (localityField) {
+    return;
   }
 
-  addLocalityFieldIfNeeded();
+  var formRow = document.querySelector('#signup-form .form__row:last-of-type');
+  if (!formRow) {
+    return;
+  }
+
+  var localityRow = document.createElement('div');
+  localityRow.className = 'form__row';
+  localityRow.innerHTML = '<label for="locality">Locality</label><input type="text" id="locality" name="locality" placeholder="City or suburb" autocomplete="address-level2">';
+  formRow.parentNode.insertBefore(localityRow, formRow.nextSibling);
+}
+
+addLocalityFieldIfNeeded();
 
   if (phoneField) {
     phoneField.inputMode = 'numeric';
@@ -159,14 +159,28 @@ document.addEventListener('DOMContentLoaded', function () {
       var submitButton = form.querySelector('button[type="submit"]');
       var formData = new FormData(form);
       var params = new URLSearchParams(formData);
-      if (formData.get('locality') === null) {
+if (formData.get('locality') === null) {
         params.append('locality', '');
       }
+
 
       submitButton.disabled = true;
       note.textContent = 'Sending your information...';
 
-      submitToGoogleApp(params)
+submitToGoogleApp(params)
+        .then(function () {
+          note.textContent = 'Thanks, ' + name + '. Your information has been sent.';
+          form.reset();
+        })
+        .catch(function (err) {
+          console.error(err);
+          note.textContent = 'Submission failed — please try again.';
+        })
+        .finally(function () {
+          submitButton.disabled = false;
+          setTimeout(function () { note.textContent = ''; }, 4000);
+        });
+
         .then(function () {
           note.textContent = 'Thanks, ' + name + '. Your information has been sent.';
           form.reset();
@@ -201,12 +215,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
     return fetch(gasWebAppUrl, {
       method: 'POST',
-      mode: 'no-cors',
-      body: params
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+      },
+      body: params.toString()
     }).then(function (response) {
-      if (response.type !== 'opaque' && !response.ok) {
+      if (!response.ok) {
         throw new Error('Submission failed');
       }
+      return response.text();
+    });
+
     });
   }
 
@@ -232,6 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
       { key: 'phone', label: 'And your phone number?', type: 'tel', placeholder: '+27 00 000 0000', required: true },
       { key: 'country', label: 'Which country are you in?', type: 'text', placeholder: 'Your country', required: true },
       { key: 'locality', label: 'What city or suburb are you in?', type: 'text', placeholder: 'Your city or suburb', required: true },
+
       { key: 'message', label: 'Finally, what question would you like to ask us? Please tell us in full so our team can give you the right answer.', type: 'textarea', placeholder: 'Tell us about your goals, timeline, or what you want to create...', required: true }
     ];
 
@@ -450,6 +470,7 @@ document.addEventListener('DOMContentLoaded', function () {
         label = 'Which country are you in, ' + name + '?';
       } else if (name && step.key === 'locality') {
         label = 'And what city or suburb are you in, ' + name + '?';
+
       } else if (name && step.key === 'message') {
         label = 'Finally, ' + name + ', what question would you like to ask us? Please tell us in full so our team can give you the right answer.';
       }

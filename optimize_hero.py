@@ -11,3 +11,4 @@ img = Image.open(source).convert('RGB')
 img.thumbnail((1600, 1600), Image.Resampling.LANCZOS)
 img.save(destination, quality=78, optimize=True, progressive=True)
 print(f'Created {destination} at size {img.size}')
+
