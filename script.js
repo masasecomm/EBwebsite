@@ -180,17 +180,6 @@ submitToGoogleApp(params)
           submitButton.disabled = false;
           setTimeout(function () { note.textContent = ''; }, 4000);
         });
-
-        .then(function () {
-          note.textContent = 'Thanks, ' + name + '. Your information has been sent.';
-          form.reset();
-        })
-        .catch(function () {
-          note.textContent = 'There was a problem sending your information. Please try again.';
-        })
-        .finally(function () {
-          submitButton.disabled = false;
-        });
     });
   }
 
@@ -215,17 +204,13 @@ submitToGoogleApp(params)
 
     return fetch(gasWebAppUrl, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-      },
-      body: params.toString()
+      mode: 'no-cors',
+      body: params
     }).then(function (response) {
-      if (!response.ok) {
+      if (response.type !== 'opaque' && !response.ok) {
         throw new Error('Submission failed');
       }
-      return response.text();
-    });
-
+      return response;
     });
   }
 
