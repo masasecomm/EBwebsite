@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   /* ---- Signup form delivery ---- */
   var form = document.getElementById('signup-form');
-  var gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbxHdWrtgLMzHZiYSMmIdqek-HqLnlpCL8mIPofVugwRBTlyrG4UHERU4kIcpzcGlwlD/exec';
+  var gasWebAppUrl = 'https://script.google.com/macros/s/AKfycbwoc4OUkzwcoKCkY2B3JqHsP0z3GjJxmq9utsi1w0Xoj0vXvB3bwvGtaZ1sft7jnW7I/exec';
 var destinationSheet = 'EasyBroadcast';
 var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 var phoneField = document.getElementById('phone');
