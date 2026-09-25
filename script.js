@@ -210,7 +210,7 @@ submitToGoogleApp(params)
       if (response.type !== 'opaque' && !response.ok) {
         throw new Error('Submission failed');
       }
-      return response.text();
+      return response;
     });
   }
 
@@ -513,7 +513,6 @@ submitToGoogleApp(params)
         submitBtn.disabled = true;
         setConversationBusy(true);
         waitForAdminResponse(function () {
-          addBubble('Thanks, ' + state.data.name + '. I am sending your message now. Our team will contact you soon.', 'bot');
           submitToGoogleApp(state.data, 'popup')
             .then(function () {
               finishChat();
@@ -566,7 +565,6 @@ submitToGoogleApp(params)
       if (state.index === steps.length - 1) {
         submitBtn.disabled = true;
         waitForAdminResponse(function () {
-          addBubble('Thanks, ' + state.data.name + '. I am sending your question now. Our team will contact you soon.', 'bot');
           submitToGoogleApp(state.data, 'popup')
             .then(function () {
               finishChat();
