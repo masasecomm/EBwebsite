@@ -180,17 +180,6 @@ submitToGoogleApp(params)
           submitButton.disabled = false;
           setTimeout(function () { note.textContent = ''; }, 4000);
         });
-
-        .then(function () {
-          note.textContent = 'Thanks, ' + name + '. Your information has been sent.';
-          form.reset();
-        })
-        .catch(function () {
-          note.textContent = 'There was a problem sending your information. Please try again.';
-        })
-        .finally(function () {
-          submitButton.disabled = false;
-        });
     });
   }
 
@@ -224,8 +213,6 @@ submitToGoogleApp(params)
         throw new Error('Submission failed');
       }
       return response.text();
-    });
-
     });
   }
 
