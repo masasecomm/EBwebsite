@@ -210,7 +210,7 @@ submitToGoogleApp(params)
       if (response.type !== 'opaque' && !response.ok) {
         throw new Error('Submission failed');
       }
-      return response;
+      return response.text();
     });
   }
 
