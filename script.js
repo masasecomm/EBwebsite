@@ -97,25 +97,31 @@ document.addEventListener('DOMContentLoaded', function () {
 var destinationSheet = 'EasyBroadcast';
 var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 var phoneField = document.getElementById('phone');
+var localityField = document.getElementById('locality');
 
-function addLocalityFieldIfNeeded() {
-  var localityField = document.getElementById('locality');
-  if (localityField) {
+function populateLocalityFromViewerLocation() {
+  if (!localityField || localityField.value.trim()) {
     return;
   }
 
-  var formRow = document.querySelector('#signup-form .form__row:last-of-type');
-  if (!formRow) {
-    return;
-  }
-
-  var localityRow = document.createElement('div');
-  localityRow.className = 'form__row';
-  localityRow.innerHTML = '<label for="locality">Locality</label><input type="text" id="locality" name="locality" placeholder="City or suburb" autocomplete="address-level2">';
-  formRow.parentNode.insertBefore(localityRow, formRow.nextSibling);
+  fetch('https://ipapi.co/json/')
+    .then(function (response) {
+      if (!response.ok) {
+        throw new Error('Location lookup failed');
+      }
+      return response.json();
+    })
+    .then(function (location) {
+      if (!localityField.value.trim()) {
+        localityField.value = location.city || location.town || location.suburb || '';
+      }
+    })
+    .catch(function () {
+      // Location is optional; leave the field empty when lookup is unavailable.
+    });
 }
 
-addLocalityFieldIfNeeded();
+populateLocalityFromViewerLocation();
 
   if (phoneField) {
     phoneField.inputMode = 'numeric';
