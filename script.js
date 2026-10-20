@@ -2,6 +2,44 @@
 
 document.addEventListener('DOMContentLoaded', function () {
 
+  function getPlanMessage(planName) {
+    var normalized = (planName || 'Starter').toString().trim();
+    if (!normalized) {
+      return "I'm interested to Starter subscription, please tell me more information about it.";
+    }
+    return "I'm interested to " + normalized + " subscription, please tell me more information about it.";
+  }
+
+  function populatePlanMessage(planName) {
+    var form = document.getElementById('signup-form');
+    if (!form) {
+      return;
+    }
+
+    var textArea = form.querySelector('textarea[name="message"]') || document.getElementById('message');
+    if (!textArea) {
+      return;
+    }
+
+    var selectedPlan = (planName || 'Starter').toString().trim() || 'Starter';
+    var message = getPlanMessage(selectedPlan);
+    textArea.value = message;
+    textArea.focus({ preventScroll: true });
+    textArea.setSelectionRange(message.length, message.length);
+    textArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.querySelectorAll('a[href="#start"]').forEach(function (link) {
+    link.addEventListener('click', function (event) {
+      event.preventDefault();
+      var planName = (link.getAttribute('data-plan') || link.textContent || 'Starter').trim();
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, '', '#start');
+      }
+      populatePlanMessage(planName);
+    });
+  });
+
   /* ---- Mobile navigation ---- */
   var navToggle = document.querySelector('.nav__toggle');
   var navLinks = document.querySelector('.nav__links');
