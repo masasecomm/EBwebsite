@@ -258,16 +258,6 @@ submitToGoogleApp(params)
     });
   }
 
-  var interactionTriggered = false;
-  var startedAt = Date.now();
-
-  function triggerInteractionFlag() {
-    interactionTriggered = true;
-  }
-
-  document.addEventListener('click', triggerInteractionFlag, { passive: true });
-  document.addEventListener('scroll', triggerInteractionFlag, { passive: true, capture: true });
-
   function openLeadPopup() {
     if (document.getElementById('lead-chat-popup')) {
       return;
@@ -680,14 +670,19 @@ submitToGoogleApp(params)
     }, 400);
   }
 
-  function checkPopupEligibility() {
-    var elapsed = Date.now() - startedAt;
-    if (elapsed >= 10000 && interactionTriggered && !document.body.classList.contains('lead-chat-open')) {
-      openLeadPopup();
+  var previousScrollY = window.scrollY;
+
+  function openPopupAfterScrollDown() {
+    if (window.scrollY <= previousScrollY) {
+      previousScrollY = window.scrollY;
+      return;
     }
+
+    window.removeEventListener('scroll', openPopupAfterScrollDown);
+    setTimeout(openLeadPopup, 15000);
   }
 
-  setInterval(checkPopupEligibility, 1000);
+  window.addEventListener('scroll', openPopupAfterScrollDown, { passive: true });
 
   /* ---- Footer year ---- */
   var year = document.getElementById('year');
